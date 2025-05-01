@@ -1,0 +1,8 @@
+Wind turbine states
+    Generator Torque
+    Generator Power
+    Blade pitch
+    Yaw postion
+Environment states
+    Wind speed
+    Wind direction
