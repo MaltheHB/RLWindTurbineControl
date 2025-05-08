@@ -1,15 +1,13 @@
-
-TurbineLoads = OutData(:,[1 8 9 16 17 18 19 2 24 6 25]);
+function [TowerDEL, RotorDEL, BladeDEL] = DEL(baselineData)
+TurbineLoads = baselineData(:,[1 8 9 16 17 18 19 2 24 6 25]);
 % 1 = time, 2 = wind speed,
 % 8 = Rotor Torque, 9 Rotor Thrust,
 % 16 = Tower base moment, 17 = Out-of-phase moment
 % 18 = flapwise bending moment, 19 = edgewise bending moment
 % 24 Generator power, 25 generator torque
 % 6 rotor speed
-%plot(Mbase)
-%[CountTowerBase, hist, edges, rmm, idx] = rainflow(TurbineLoads(:,4),10);
-%histogram(BinEdges=edges', BinCounts=sum(hist,2))
-%% Rainflow count Tower
+
+% Rainflow count Tower
 % Tower base geometry
 R1 = 3.0;                        % Outer radius [m]
 t1 = 0.027;                      % Wall thickness [m]
@@ -17,8 +15,7 @@ r1 = R1-t1;
 D1 = 2 * R1;                      % Outer diameter [m]
 d1 = D1 - 2 * t1;                  % Inner diameter [m]
 y1 = D1 / 2;                      % Distance to outer fiber [m]
-%I1 = (pi/64) * (D1^4 - d1^4);      % Second moment of area [m^4]
-I1 = (pi/4) * (R1^4 - r1^4);
+I1 = (pi/4) * (R1^4 - r1^4); % Second moment of area [m^4]
 TowerStress = (TurbineLoads(:,4)*1000*y1)/I1;
 
 rf_tower = rainflow(TowerStress,100);
@@ -44,17 +41,16 @@ for i = 1:height(rf_tower)
     Towerdamage_combined = Towerdamage_combined + countT / N_iT;
     TowerdamageTime(i) =  Towerdamage_combined; 
 end
-towerLifetime = ((1/Towerdamage_combined)*200)/(60*60*24*365)
+towerLifetime = ((1/Towerdamage_combined)*200)/(60*60*24*365);
 TowerLifeCycles = (1/Towerdamage_combined)*towercycles;
 TowerDEL = ( sum(rf_tower(:,1) .* rf_tower(:,2).^mT2) / TowerLifeCycles )^(1/mT2);
-%% Rainflow count Rotor
+% Rainflow count Rotor
 % Rotor Hub geometry
 D3 = 1.5;                        % Outer diameter [m]
 t3 = 0.1;                         % Wall thickness [m]
 d3 = D3 - 2*t3;                    % Inner diameter [m]
 y3 = D3 / 2;                      % Distance from neutral axis to outer fiber [m]
-%I3 = (pi/64) * (D3^4 - d3^4);      % Second moment of area [m^4]
-I3 = (pi/4)*y3^4;
+I3 = (pi/4)*y3^4; % Second moment of area [m^4]
 rotorStress = (TurbineLoads(:,2)*1000*y3)/I3;
 
 rf_rotor = rainflow(rotorStress,100);
@@ -78,10 +74,10 @@ for i = 1:height(rf_rotor)
     rotordamageTime(i) =  rotordamage_combined; 
 end
 
-rotorLifetime = ((1/rotordamage_combined)*200)/(60*60*24*365)
+BaselineRotorLifetime = ((1/rotordamage_combined)*200)/(60*60*24*365);
 rotorlifecycles = (1/rotordamage_combined)*rotorcycles;
-rotorDEL = ( sum(rf_rotor(:,1) .* rf_rotor(:,2).^mT2) / rotorlifecycles )^(1/mT2);
-%% Rainflow edgewise and flapwise
+RotorDEL = ( sum(rf_rotor(:,1) .* rf_rotor(:,2).^mT2) / rotorlifecycles )^(1/mT2);
+% Rainflow edgewise and flapwise
 % blade geometry
 % Blade root geometry from NREL 5-MW model
 D2 = 3.0;                        % Outer diameter [m]
@@ -120,9 +116,7 @@ X_c = 407.3e6;%542.49*10^6; % Compression strength in Pa
 lambda_ma = 1.35*1.35*1.1*1.1*1; % partial safety factor short term strength
 lambda_mb = 1.35*1.1*1.2; % partial safety factor fatigue strength
 stress_refB = 505e6/lambda_mb;
-%C = 10^(20);           % example value — material-specific
 totalCycles=sum(rf_combined(:,1));
-% Compute damage (example for combined)
 damage_combined = 0;
 damageTime = [];
 stressmeanmean = mean2(rf_combined(:,3));
@@ -132,7 +126,6 @@ for i = 1:height(rf_combined)
     mean = rf_combined(i,3);
     amplitude = (range/2);
     count = rf_combined(i,1);
-    %N_i = N_refB*(stress_refB/range)^m;
     N_i = ((X_t+X_c-abs(2*lambda_ma*mean-X_t+abs(X_c)))/(2*(lambda_mb)*range))^m;
     C_1b = N_i^(1/m);
     lambda_mb2 = lambda_mb*C_1b;
@@ -142,57 +135,6 @@ for i = 1:height(rf_combined)
 end
 DamageEq = damage_combined/totalCycles;
 lifeCycles = (1/damage_combined)*totalCycles;
-bladeDEL = ( sum(rf_combined(:,1) .* rf_combined(:,2).^m) / lifeCycles )^(1/m);
-numDmgEq = (X_t+X_c-abs(2*lambda_ma*stressmeanmean-X_t+abs(X_c)));
-syms stress_eq
-S = solve((numDmgEq/stress_eq)^m-lifeCycles == 0,stress_eq,Real=true)
-stress_eqv = double(S(1,1))/(2*lambda_mb);
-stress_count = 0;
-for e = 1:height(rf_combined)
-    if bladeDEL < rf_combined(e,2)
-        stress_count = stress_count + 1;
-    end
+BladeDEL = ( sum(rf_combined(:,1) .* rf_combined(:,2).^m) / lifeCycles )^(1/m);
+BaselineBladeLifetime = ((1/damage_combined)*200)/(60*60*24*365);
 end
-numberStress = stress_count
-%DamageEqLoad = solve(((X_t+X_c-abs(2*lambda_ma*stressmeanmean-X_t+abs(X_c)))/(2*(lambda_mb)*stress_eq))^m-lifeCycles,stress_eq);
-fprintf('Fatigue damage (combined): %.5e\n', damage_combined);
-lifetime = ((1/damage_combined)*200)/(60*60*24*365)
-%histogram(BinEdges=edges2', BinCounts=sum(hist2,2))
-plot(damageTime)
-%%
-plot(flapwiseMoment)
-hold on
-plot(stress_flap)
-legend("flap","stress")
-%%
-% Parameters
-m = 3;
-sigma_D = 45;       % MPa
-N_D = 1e7;          % cycles
-C = sigma_D^m * N_D;
-
-% Create N vector: from 1e4 to 1e10
-N = logspace(4, 10, 200);
-
-% Initialize stress
-stress = zeros(size(N));
-
-% Apply S-N curve with endurance limit
-for i = 1:length(N)
-    if N(i) <= N_D
-        stress(i) = (C / N(i))^(1/m);
-    else
-        stress(i) = sigma_D;
-    end
-end
-
-% Plot
-figure;
-loglog(N, stress, 'r-', 'LineWidth', 2);
-grid on;
-xlabel('Number of Cycles to Failure (N)');
-ylabel('Stress Range (MPa)');
-title('S–N Curve with Endurance Limit (Tower Steel)');
-%%
-
-
