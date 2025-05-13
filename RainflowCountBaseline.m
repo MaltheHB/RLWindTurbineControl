@@ -18,7 +18,7 @@ y1 = D1 / 2;                      % Distance to outer fiber [m]
 I1 = (pi/4) * (R1^4 - r1^4); % Second moment of area [m^4]
 TowerStress = (TurbineLoads(:,4)*1000*y1)/I1;
 
-rf_tower = rainflow(TowerStress,100);
+rf_tower = rainflow(TurbineLoads(:,4)*1000,100);
 
 mT1 = 3;% S-N curve slope factor for steel
 mT2 = 5;
@@ -53,7 +53,7 @@ y3 = D3 / 2;                      % Distance from neutral axis to outer fiber [m
 I3 = (pi/4)*y3^4; % Second moment of area [m^4]
 rotorStress = (TurbineLoads(:,2)*1000*y3)/I3;
 
-rf_rotor = rainflow(rotorStress,100);
+rf_rotor = rainflow(TurbineLoads(:,2)*1000,100);
 rotorcycles = sum(rf_rotor(:,1));
 mR1 = 3;% S-N curve slope factor for steel
 mR2 = 5;
@@ -98,12 +98,12 @@ stress_flap = (flapwiseMoment * y2) / I2;%flapstiff)*Eflap;%I2;
 stress_edge = (edgewiseMoment * y2) / I2;%edgestiff)*Eedge;%I2;
 % Optional: Total stress or worst-case
 stress_combined = sqrt(stress_flap.^2 + stress_edge.^2);  % conservative
-
+bending_combined = sqrt(flapwiseMoment.^2 + edgewiseMoment.^2);
 % Now perform rainflow counting and fatigue for each
-rf_flap = rainflow(stress_flap,100);
-rf_edge = rainflow(stress_edge,100);
-rf_combined = rainflow(stress_combined,100);
-[CountBlade, hist2, edges2, rmm2, idx2] = rainflow(stress_combined,100);  % optional
+rf_flap = rainflow(flapwiseMoment,100);
+rf_edge = rainflow(edgewiseMoment,100);
+rf_combined = rainflow(bending_combined,100);
+[CountBlade, hist2, edges2, rmm2, idx2] = rainflow(bending_combined,100);  % optional
 bladeCount = sum(hist2,2);
 bladeBin = edges2;
 bladeBinEdges = bladeBin(1:end-1);
