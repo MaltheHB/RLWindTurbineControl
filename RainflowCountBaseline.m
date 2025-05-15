@@ -43,7 +43,7 @@ for i = 1:height(rf_tower)
 end
 towerLifetime = ((1/Towerdamage_combined)*200)/(60*60*24*365);
 TowerLifeCycles = (1/Towerdamage_combined)*towercycles;
-TowerDEL = ( sum(rf_tower(:,1) .* rf_tower(:,2).^mT2) / TowerLifeCycles )^(1/mT2);
+TowerDEL = ( sum(rf_tower(:,1) .* rf_tower(:,2).^mT2) / towercycles )^(1/mT2);
 % Rainflow count Rotor
 % Rotor Hub geometry
 D3 = 1.5;                        % Outer diameter [m]
@@ -76,7 +76,7 @@ end
 
 BaselineRotorLifetime = ((1/rotordamage_combined)*200)/(60*60*24*365);
 rotorlifecycles = (1/rotordamage_combined)*rotorcycles;
-RotorDEL = ( sum(rf_rotor(:,1) .* rf_rotor(:,2).^mT2) / rotorlifecycles )^(1/mT2);
+RotorDEL = ( sum(rf_rotor(:,1) .* rf_rotor(:,2).^mT2) / rotorcycles )^(1/mT2);
 % Rainflow edgewise and flapwise
 % blade geometry
 % Blade root geometry from NREL 5-MW model
@@ -135,6 +135,6 @@ for i = 1:height(rf_combined)
 end
 DamageEq = damage_combined/totalCycles;
 lifeCycles = (1/damage_combined)*totalCycles;
-BladeDEL = ( sum(rf_combined(:,1) .* rf_combined(:,2).^m) / lifeCycles )^(1/m);
+BladeDEL = ( sum(rf_combined(:,1) .* rf_combined(:,2).^m) / totalCycles )^(1/m);
 BaselineBladeLifetime = ((1/damage_combined)*200)/(60*60*24*365);
 end
