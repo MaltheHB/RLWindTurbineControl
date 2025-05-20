@@ -24,6 +24,5 @@ gainChanges = [];
 
 for i = 1:2
     [Kp, Ki]= DeltaGains();
-    gainChanges(i,1) = Kp;
-    gainChanges(i,2) = Ki;
+    gainChanges = 
 end

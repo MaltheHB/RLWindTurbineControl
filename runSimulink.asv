@@ -1,4 +1,12 @@
-
+%%
+KpGainChange = 0;
+KiGainChange = 0;
+sim SystemSimulationPPO;
+baselineGainOut = cat(2,OutData,OutKp,OutKi,CostData);
+fname = sprintf('baselineControllerOutput.mat');
+destination = "C:\Users\malth\Desktop\Vestas OpenFast\RLWindTurbineControl\SimulinkResults";
+filename = fullfile(destination,fname);
+save(filename,"baselineGainOut");
 %%
 testData = load("baselineControllerOutput.mat");
 testData = testData.baselineGainOut;
