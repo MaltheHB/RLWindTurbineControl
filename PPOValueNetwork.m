@@ -1,7 +1,9 @@
-%% Neural Network
-%% Deep Neural Network Predictor (regression)
+%% PPO Algorithm
 % ------------------------------------------------------------
-
+clc
+clear
+load("Coefficients.mat")
+Ts    = 0.1;     % sample time in wind file (s)  ― see `TimeStep`  in *.inp
 SampleData = load("baselineControllerOutput.mat");
 % Actor Network
 obsDim = 5;
@@ -63,11 +65,11 @@ critic = rlValueRepresentation(criticNet, obsInfo, ...
 agentOpts = rlPPOAgentOptions( ...
     'ClipFactor', 0.2, ...
     'EntropyLossWeight', 0.01, ...
-    'MiniBatchSize', 1, ...
+    'MiniBatchSize',100, ...
     'ExperienceHorizon', 1000, ...
     'AdvantageEstimateMethod', 'gae', ...
     'GAEFactor', 0.95, ...
-    'SampleTime', 0.01);  
+    'SampleTime', 0.1);  
 
 agent = rlPPOAgent(actor, critic, agentOpts);
 
@@ -75,13 +77,133 @@ Observations = [];
 
 CostData = [];
 %%
-env = rlSimulinkEnv('SystemSimulationPPO','SystemSimulationPPO/RL Agent',obsInfo,actInfo,'UseFastRestart','on');
+Tend  = 10;       % total duration in wind file (s) ― see `AnalysisTime`
+MaxSteps = round(Tend/0.1);   % 30/0.05 = 600 simulation steps
+env = rlSimulinkEnv('SystemSimulationPPO','SystemSimulationPPO/RL Agent',obsInfo,actInfo);
+%env.ResetFcn = @(in) setModelParameter(in,'StopTime',num2str(Tend));
 %env.UseFastRestart = "on";
 trainOpts = rlTrainingOptions( ...
-    MaxEpisodes = 1000, ...
-    MaxStepsPerEpisode = 500, ...
+    MaxEpisodes = 4000, ...
+    MaxStepsPerEpisode = 2000, ...
     ScoreAveragingWindowLength = 20, ...
     Verbose = false, ...
     Plots = "training-progress");
 
 trainingStats = train(agent, env, trainOpts);
+%%
+save("trainedPPO_PI_Agent.mat", "agent");
+%%
+plot(OutData(:,24))
+%% Deep Neural Network Predictor (regression)
+% ------------------------------------------------------------
+Ts    = 0.05;     % sample time in wind file (s)  ― see TimeStep  in *.inp
+SampleData = load("baselineControllerOutput.mat");
+
+% Actor Network
+obsDim = 5;
+actDim = 2;
+
+obsInfo = rlNumericSpec([obsDim 1], 'Name','observations');
+
+% Example controller bounds (replace with your actual bounds)
+KpBounds = [0.01 1.0];
+KiBounds = [0.01 1.0];
+
+actInfo = rlNumericSpec([actDim 1], ...
+    'LowerLimit',[KpBounds(1); KiBounds(1)], ...
+    'UpperLimit',[KpBounds(2); KiBounds(2)], ...
+    'Name','controller_gains' );
+actorLayers = [
+    featureInputLayer(obsDim, 'Normalization','none',Name="state")
+    fullyConnectedLayer(128, 'Name','fc1')
+    tanhLayer('Name','tanh1')
+    fullyConnectedLayer(128, 'Name','fc2')
+    tanhLayer('Name','tanh2')
+];
+
+% Output heads: mean and std (log sigma)
+meanLayer = [
+    fullyConnectedLayer(actDim, Name = 'mean')
+    tanhLayer(Name="tanhMean")
+    scalingLayer(Name = "Scale", ...
+        Scale = [diff(KpBounds)/2; diff(KiBounds)/2], ...
+        Bias = [sum(KpBounds)/2; sum(KiBounds)/2])
+];
+
+stdLayer = [
+    fullyConnectedLayer(actDim, Name="logstd")
+    softplusLayer(Name ="std") % ensures std > 0
+];
+
+actorNet = layerGraph(actorLayers);
+actorNet = addLayers(actorNet, meanLayer);
+actorNet = addLayers(actorNet, stdLayer);
+actorNet = connectLayers(actorNet, "tanh2", "mean/in");
+actorNet = connectLayers(actorNet, "tanh2", "logstd/in");
+
+actor = rlContinuousGaussianActor(actorNet, obsInfo, actInfo, ...
+    ActionMeanOutputNames="Scale", ...
+    ActionStandardDeviationOutputNames="std");
+
+% Value Network
+criticNet = [
+    featureInputLayer(obsDim,'Normalization','none','Name','state')
+    fullyConnectedLayer(128, 'Name','fc1')
+    reluLayer('Name','relu1')
+    fullyConnectedLayer(128, 'Name','fc2')
+    reluLayer('Name','relu2')
+    fullyConnectedLayer(1, 'Name','value')
+];
+
+criticOpts = rlRepresentationOptions('LearnRate',3e-4);
+
+critic = rlValueRepresentation(criticNet, obsInfo, ...
+    'Observation','state', criticOpts );
+
+agentOpts = rlPPOAgentOptions( ...
+    'ClipFactor', 0.2, ...
+    'EntropyLossWeight', 0.01, ...
+    'MiniBatchSize', 1, ...
+    'ExperienceHorizon', 1000, ...
+    'AdvantageEstimateMethod','gae', ...
+    'GAEFactor',0.95, ...
+    'SampleTime',Ts);
+
+agent = rlPPOAgent(actor, critic, agentOpts);
+
+Observations = [];
+CostData     = [];
+
+% Simulation environment setup
+Tend     = 30;                           % total duration (s)
+MaxSteps = round(Tend/Ts);              % number of steps
+simOpts  = rlSimulationOptions(MaxSteps=MaxSteps);
+
+mdl      = "SystemSimulationPPO";
+agentBlk = mdl + "/RL Agent";
+
+% Disable fast restart so that the InflowWind S-Function reloads the .inp file
+env = rlSimulinkEnv(mdl, agentBlk, obsInfo, actInfo, ...
+                   'UseFastRestart','off');
+
+% Custom reset function to set stop time and force a full model reload
+env.ResetFcn = @(in)localReset(in, Tend);
+
+% Training options
+trainOpts = rlTrainingOptions( ...
+    MaxEpisodes = 400, ...
+    MaxStepsPerEpisode = MaxSteps, ...
+    ScoreAveragingWindowLength = 20, ...
+    Verbose = false, ...
+    Plots = "training-progress");
+
+trainingStats = train(agent, env, trainOpts);
+
+% Local helper function for environment reset
+function in = localReset(in, Tend)
+    % 1) Update the Simulink stop time
+    in = setModelParameter(in, 'StopTime', num2str(Tend));
+    % 2) Close & reopen the model to force the S-Function to reload the wind file
+    bdclose('SystemSimulationPPO');
+    open_system('SystemSimulationPPO');
+end
