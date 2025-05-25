@@ -1,34 +1,26 @@
 
+
+sim SystemSimulationPPOTrained;
+CombinedPPOSimOUT = cat(2,CostData,Observations,Actions);
+fname1 = sprintf('CombinedPPOSimOUT.mat');
+destination = "C:\Users\malth\Desktop\Vestas OpenFast\RLWindTurbineControl\SimulinkResults";
+filename1 = fullfile(destination,fname1);
+save(filename1,"CombinedPPOSimOUT");
+CombinedPPOSimOUTLong = cat(2,OutData,Gains);
+fname1 = sprintf('CombinedPPOSimOUTLong.mat');
+destination = "C:\Users\malth\Desktop\Vestas OpenFast\RLWindTurbineControl\SimulinkResults";
+filename1 = fullfile(destination,fname1);
+save(filename1,"CombinedPPOSimOUTLong");
 %%
-testData = load("baselineControllerOutput.mat");
-testData = testData.baselineGainOut;
-
-[baselineTowerDEL, baselineRotorDEL, baselineBladeDEL] = RainflowCountBaseline(testData);
-BaselineDEL = [baselineTowerDEL, baselineRotorDEL, baselineBladeDEL];
-%% Generate Training Data
-NoFiles = 10; % Number of Training sets with randomzised gains to generate.
-gainChanges = [];
-
-for i = 1:10
-    [Kp, Ki]= DeltaGains();
-    gainChanges(i,1) = Kp;
-    gainChanges(i,2) = Ki;
-end
-%% Generate Training Data
-for i=1:10
-    KpGainChange = gainChanges(i,1);
-    KiGainChange = gainChanges(i,2);
-    sim SystemSimulationPPO;
-    RandomizedGainOut = cat(2,OutData,OutKp,OutKi,CostData);
-    %fnameCost = sprintf('Cost%03d.mat',i);
-    %fnameKp = sprintf('KpDeltas%03d.mat',i);
-    %fnameKi = sprintf('KiDeltas%03d.mat',i);
-    fname = sprintf('RandomizedGainsOutput%03d.mat',i);
-    destination = "C:\Users\malth\Desktop\Vestas OpenFast\RLWindTurbineControl\SimulinkResults";
-    %Kpfilename = fullfile(destination,fnameKp);
-    %Kifilename = fullfile(destination,fnameKi);
-    filename = fullfile(destination,fname);
-    %save(Kpfilename,"OutKp");
-    %save(Kifilename,"OutKi");
-    save(filename,"RandomizedGainOut");
-end
+sim SystemSimulationNoRL;
+CombinedBaselineSimOut = cat(2,CostData,Observations);
+fname2 = sprintf('CombinedBaselineSimOut.mat');
+destination = "C:\Users\malth\Desktop\Vestas OpenFast\RLWindTurbineControl\SimulinkResults";
+filename2 = fullfile(destination,fname2);
+save(filename2,"CombinedBaselineSimOut");
+CombinedBaselineSimOutLong = cat(2,OutData,Gains);
+fname2 = sprintf('CombinedBaselineSimOutLong.mat');
+destination = "C:\Users\malth\Desktop\Vestas OpenFast\RLWindTurbineControl\SimulinkResults";
+filename2 = fullfile(destination,fname2);
+save(filename2,"CombinedBaselineSimOutLong");
+%%

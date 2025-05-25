@@ -3,17 +3,15 @@
 clc
 clear
 load("Coefficients.mat")
-Ts    = 0.1;     % sample time in wind file (s)  ― see `TimeStep`  in *.inp
-SampleData = load("baselineControllerOutput.mat");
 % Actor Network
-obsDim = 5;
+obsDim = 7;
 actDim = 2;
 
 obsInfo = rlNumericSpec([obsDim 1], 'Name','observations');
 
 % Example controller bounds (replace with your actual bounds)
-KpBounds = [0.01 1.0];
-KiBounds = [0.01 1.0];
+KpBounds = [0.001 5.0];
+KiBounds = [0.001 5.0];
 
 actInfo = rlNumericSpec([actDim 1], ...
     'LowerLimit',[KpBounds(1); KiBounds(1)], ...
@@ -57,11 +55,8 @@ criticNet = [
     reluLayer('Name','relu2')
     fullyConnectedLayer(1, 'Name','value')
 ];
+critic = rlValueFunction(criticNet,obsInfo);
 
-criticOpts = rlRepresentationOptions('LearnRate',3e-4);
-
-critic = rlValueRepresentation(criticNet, obsInfo, ...
-    'Observation','state', criticOpts );
 agentOpts = rlPPOAgentOptions( ...
     'ClipFactor', 0.2, ...
     'EntropyLossWeight', 0.01, ...
@@ -73,23 +68,35 @@ agentOpts = rlPPOAgentOptions( ...
 
 agent = rlPPOAgent(actor, critic, agentOpts);
 
-Observations = [];
 
-CostData = [];
 %%
 Tend  = 10;       % total duration in wind file (s) ― see `AnalysisTime`
-MaxSteps = round(Tend/0.1);   % 30/0.05 = 600 simulation steps
 env = rlSimulinkEnv('SystemSimulationPPO','SystemSimulationPPO/RL Agent',obsInfo,actInfo);
+validateEnvironment(env)
 %env.ResetFcn = @(in) setModelParameter(in,'StopTime',num2str(Tend));
-%env.UseFastRestart = "on";
+env.UseFastRestart = "off";
 trainOpts = rlTrainingOptions( ...
-    MaxEpisodes = 4000, ...
-    MaxStepsPerEpisode = 2000, ...
-    ScoreAveragingWindowLength = 20, ...
-    Verbose = false, ...
+    MaxEpisodes = 100, ...
+    MaxStepsPerEpisode = 500, ...
+    StopTrainingCriteria="GlobalStepCount",...
+    StopTrainingValue=400,...
+    ScoreAveragingWindowLength = 10, ...
+    Verbose = true, ...
     Plots = "training-progress");
-
+    %StopTrainingCriteria="GlobalStepCount",...
+    %StopTrainingValue=4000,...
 trainingStats = train(agent, env, trainOpts);
+for i=1:10
+ trainingStats = train(agent, env,trainingStats);
+end
+%%
+for i=1:100
+ trainingStats = train(agent, env,trainingStats);
+end
+%%
+for i=1:889
+ trainingStats = train(agent, env,trainingStats);
+end
 %%
 save("trainedPPO_PI_Agent.mat", "agent");
 %%
