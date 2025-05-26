@@ -24,3 +24,6 @@ destination = "C:\Users\malth\Desktop\Vestas OpenFast\RLWindTurbineControl\Simul
 filename2 = fullfile(destination,fname2);
 save(filename2,"CombinedBaselineSimOutLong");
 %%
+load("Coefficients1.mat")
+%%
+load("Coefficients2.mat")
