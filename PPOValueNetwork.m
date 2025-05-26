@@ -99,6 +99,15 @@ trainingStats = train(agent, env,trainingStats);
 trainingStats.TrainingOptions.MaxEpisodes = 600;
 load("Coefficients3.mat")
 trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 700;
+load("Coefficients1.mat")
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 800;
+load("Coefficients2.mat")
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 900;
+load("Coefficients3.mat")
+trainingStats = train(agent, env,trainingStats);
 %%
 for i=1:100
  trainingStats = train(agent, env,trainingStats);
