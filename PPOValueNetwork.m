@@ -4,14 +4,14 @@ clc
 clear
 load("Coefficients1.mat")
 % Actor Network
-obsDim = 7;
+obsDim = 8;
 actDim = 2;
 
 obsInfo = rlNumericSpec([obsDim 1], 'Name','observations');
 
 % Example controller bounds (replace with your actual bounds)
-KpBounds = [0.01 0.03];
-KiBounds = [0.01 0.03];
+KpBounds = [0.001 0.05];
+KiBounds = [0.001 0.05];
 
 actInfo = rlNumericSpec([actDim 1], ...
     'LowerLimit',[KpBounds(1); KiBounds(1)], ...
@@ -74,13 +74,13 @@ agent = rlPPOAgent(actor, critic, agentOpts);
 
 
 %%
-TMax  = 5000;       % total duration in wind file (s) ― see `AnalysisTime`
+TMax  = 10000;       % total duration in wind file (s) ― see `AnalysisTime`
 env = rlSimulinkEnv('SystemSimulationPPONew','SystemSimulationPPONew/RL Agent',obsInfo,actInfo);
 %env.ResetFcn = @(in) setModelParameter(in,'StopTime',num2str(Tend));
 env.UseFastRestart = "on";
 trainOpts = rlTrainingOptions( ...
-    MaxEpisodes = 100, ...
-    MaxStepsPerEpisode = 5, ...
+    MaxEpisodes = 10, ...
+    MaxStepsPerEpisode = 20, ...
     StopOnError= "off", ...
     ScoreAveragingWindowLength = 25, ...
     Verbose = true, ...
@@ -89,33 +89,206 @@ trainOpts = rlTrainingOptions( ...
     %StopTrainingValue=4000,...
 trainingStats = train(agent, env, trainOpts);
 %%
-trainingStats.TrainingOptions.MaxEpisodes = 100;
+trainingStats.TrainingOptions.MaxEpisodes = 20;
 load("Coefficients2.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 30;
+load("Coefficients3.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 40;
+load("Coefficients4.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 50;
+load("Coefficients5.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 60;
+load("Coefficients1.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 70;
+load("Coefficients2.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 80;
+load("Coefficients3.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 90;
+load("Coefficients4.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 100;
+load("Coefficients5.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+%%
+trainingStats.TrainingOptions.MaxEpisodes = 110;
+load("Coefficients5.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 120;
+load("Coefficients4.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 130;
+load("Coefficients2.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 140;
+load("Coefficients3.mat")
+TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
 trainingStats.TrainingOptions.MaxEpisodes = 150;
-load("Coefficients3.mat")
+load("Coefficients1.mat")
+TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
-trainingStats.TrainingOptions.MaxEpisodes = 200;
+trainingStats.TrainingOptions.MaxEpisodes = 160;
+load("Coefficients1.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 170;
 load("Coefficients4.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 180;
+load("Coefficients4.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 190;
+load("Coefficients3.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+%%
+trainingStats.TrainingOptions.MaxEpisodes = 200;
+load("Coefficients1.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 210;
+load("Coefficients4.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 220;
+load("Coefficients4.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 230;
+load("Coefficients3.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 240;
+load("Coefficients5.mat")
+TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
 trainingStats.TrainingOptions.MaxEpisodes = 250;
 load("Coefficients5.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 260;
+load("Coefficients2.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 270;
+load("Coefficients2.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 280;
+load("Coefficients2.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 290;
+load("Coefficients5.mat")
+TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
 trainingStats.TrainingOptions.MaxEpisodes = 300;
+load("Coefficients3.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 310;
 load("Coefficients1.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 320;
+load("Coefficients1.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 330;
+load("Coefficients2.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 340;
+load("Coefficients5.mat")
+TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
 trainingStats.TrainingOptions.MaxEpisodes = 350;
-load("Coefficients2.mat")
+load("Coefficients3.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+%%
+trainingStats.TrainingOptions.MaxEpisodes = 360;
+load("Coefficients3.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 370;
+load("Coefficients5.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 380;
+load("Coefficients5.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 390;
+load("Coefficients5.mat")
+TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
 trainingStats.TrainingOptions.MaxEpisodes = 400;
-load("Coefficients3.mat")
+load("Coefficients5.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 410;
+load("Coefficients1.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 420;
+load("Coefficients1.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 430;
+load("Coefficients1.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 440;
+load("Coefficients2.mat")
+TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
 trainingStats.TrainingOptions.MaxEpisodes = 450;
+load("Coefficients1.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 460;
 load("Coefficients4.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 470;
+load("Coefficients3.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 480;
+load("Coefficients3.mat")
+TMax = 10000;
+trainingStats = train(agent, env,trainingStats);
+trainingStats.TrainingOptions.MaxEpisodes = 490;
+load("Coefficients4.mat")
+TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
 trainingStats.TrainingOptions.MaxEpisodes = 500;
-load("Coefficients5.mat")
+load("Coefficients2.mat")
+TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
+%%
 %%
 for i=1:100
  trainingStats = train(agent, env,trainingStats);
@@ -125,7 +298,7 @@ for i=1:889
  trainingStats = train(agent, env,trainingStats);
 end
 %%
-save("trainedPPO_PI_Agent.mat", "agent");
+save("WorkingAgent.mat", "agent");
 %%
 plot(OutData(:,24))
 %% Deep Neural Network Predictor (regression)
