@@ -27,3 +27,5 @@ save(filename2,"CombinedBaselineSimOutLong");
 load("Coefficients1.mat")
 %%
 load("Coefficients2.mat")
+%%
+baseLineDEL = mean(DEL,1,"omitmissing");

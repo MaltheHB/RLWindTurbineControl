@@ -4,14 +4,14 @@ clc
 clear
 load("Coefficients1.mat")
 % Actor Network
-obsDim = 8;
+obsDim = 9;
 actDim = 2;
 
 obsInfo = rlNumericSpec([obsDim 1], 'Name','observations');
 
 % Example controller bounds (replace with your actual bounds)
-KpBounds = [0.001 0.05];
-KiBounds = [0.001 0.05];
+KpBounds = [0.001 0.1];
+KiBounds = [0.001 0.1];
 
 actInfo = rlNumericSpec([actDim 1], ...
     'LowerLimit',[KpBounds(1); KiBounds(1)], ...
@@ -187,14 +187,17 @@ trainingStats.TrainingOptions.MaxEpisodes = 250;
 load("Coefficients5.mat")
 TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
+%%
 trainingStats.TrainingOptions.MaxEpisodes = 260;
-load("Coefficients2.mat")
+load("Coefficients1.mat")
 TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
+%%
 trainingStats.TrainingOptions.MaxEpisodes = 270;
-load("Coefficients2.mat")
+load("Coefficients1.mat")
 TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
+%%
 trainingStats.TrainingOptions.MaxEpisodes = 280;
 load("Coefficients2.mat")
 TMax = 10000;
@@ -226,11 +229,12 @@ trainingStats = train(agent, env,trainingStats);
 trainingStats.TrainingOptions.MaxEpisodes = 350;
 load("Coefficients3.mat")
 TMax = 10000;
-trainingStats = train(agent, env,trainingStats);
 %%
+trainingStats = train(agent, env,trainingStats);
 trainingStats.TrainingOptions.MaxEpisodes = 360;
-load("Coefficients3.mat")
+load("Coefficients1.mat")
 TMax = 10000;
+
 trainingStats = train(agent, env,trainingStats);
 trainingStats.TrainingOptions.MaxEpisodes = 370;
 load("Coefficients5.mat")
@@ -298,7 +302,7 @@ for i=1:889
  trainingStats = train(agent, env,trainingStats);
 end
 %%
-save("WorkingAgent.mat", "agent");
+save("NewAgent.mat", "agent");
 %%
 plot(OutData(:,24))
 %% Deep Neural Network Predictor (regression)
