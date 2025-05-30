@@ -28,4 +28,12 @@ load("Coefficients1.mat")
 %%
 load("Coefficients2.mat")
 %%
-baseLineDEL = mean(DEL,1,"omitmissing");
+load("Coefficients1.mat")
+TMax = 600;
+sim SystemSimulationNoRL
+baseLineDEL1 = mean(DEL,1,"omitmissing");
+%%
+load("Coefficients3.mat")
+TMax = 600;
+sim SystemSimulationNoRL
+baseLineDEL2 = mean(DEL,1,"omitmissing");

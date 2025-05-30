@@ -3,8 +3,13 @@
 clc
 clear
 load("Coefficients1.mat")
+initialObs = [0.0232*rand(1);0.0154*rand(1);rand(1)*20;rand(1)*20;rand(1)*20;rand(1)*11;1000000*rand();1000000*rand()];
+actionMeans = [0.0232,0.0154];
+obsMeans = [0.0232,0.0154,0,0,17,11];
+actionSTD = [0.01,0.010];
+obsSTD = [0.0232,0.0154,10,15,2.5,5];
 % Actor Network
-obsDim = 9;
+obsDim = 8;
 actDim = 2;
 
 obsInfo = rlNumericSpec([obsDim 1], 'Name','observations');
@@ -47,10 +52,10 @@ actorNet = addLayers(actorNet, stdLayer);
 actorNet = connectLayers(actorNet, "tanh3", "mean/in");
 actorNet = connectLayers(actorNet, "tanh3", "logstd/in");
 
-actor = rlContinuousGaussianActor(actorNet, obsInfo, actInfo, ActionMeanOutputNames="Scale",ActionStandardDeviationOutputNames="std");
+actor = rlContinuousGaussianActor(actorNet, obsInfo, actInfo, ActionMeanOutputNames="Scale",ActionStandardDeviationOutputNames="std",UseDevice="gpu");
 % Value Network
 criticNet = [
-    featureInputLayer(obsDim,'Normalization','none','Name','state')
+    featureInputLayer(obsDim,'Normalization','none',Name='state')
     fullyConnectedLayer(64, 'Name','fc1')
     tanhLayer('Name','tanh1')
     fullyConnectedLayer(64, 'Name','fc2')
@@ -59,35 +64,52 @@ criticNet = [
     tanhLayer('Name','tanh3')
     fullyConnectedLayer(1, 'Name','value')
 ];
-critic = rlValueFunction(criticNet,obsInfo);
+critic = rlValueFunction(criticNet,obsInfo,"UseDevice","gpu");
 
 agentOpts = rlPPOAgentOptions( ...
     'ClipFactor', 0.2, ...
     'EntropyLossWeight', 0.01, ...
-    'MiniBatchSize',5, ...
-    'ExperienceHorizon',10, ...
+    'MiniBatchSize',8, ...
+    'ExperienceHorizon',16, ...
     'AdvantageEstimateMethod', 'gae', ...
     'GAEFactor', 0.95, ...
-    'SampleTime', 10);  
+    'SampleTime', 60);  
 
 agent = rlPPOAgent(actor, critic, agentOpts);
 
 
 %%
 TMax  = 10000;       % total duration in wind file (s) ― see `AnalysisTime`
-env = rlSimulinkEnv('SystemSimulationPPONew','SystemSimulationPPONew/RL Agent',obsInfo,actInfo);
+mdl = 'SystemSimulationPPONew';
+agentBlk = mdl + "/RL Agent";
+env = rlSimulinkEnv(mdl,agentBlk,obsInfo,actInfo);
 %env.ResetFcn = @(in) setModelParameter(in,'StopTime',num2str(Tend));
 env.UseFastRestart = "on";
+
+env.ResetFcn = @(in)randomData(mdl);
+
+%validateEnvironment(env)
+
+evl = rlEvaluator( ...
+    NumEpisodes=5, ...
+    EvaluationFrequency=10, ...
+    RandomSeeds=[11,15,20,30,99]);
 trainOpts = rlTrainingOptions( ...
-    MaxEpisodes = 10, ...
-    MaxStepsPerEpisode = 20, ...
+    MaxEpisodes = 100, ...
+    MaxStepsPerEpisode = 32, ...
     StopOnError= "off", ...
     ScoreAveragingWindowLength = 25, ...
     Verbose = true, ...
     Plots = "training-progress");
+trainOpts.StopTrainingCriteria = "AverageReward";
+trainOpts.StopTrainingValue = 8000;
+trainOpts.SaveAgentCriteria = "EvaluationStatistic";
+trainOpts.SaveAgentValue = 9000;
+trainOpts.SaveAgentDirectory = "C:\Users\malth\Desktop\Vestas OpenFAST\RLWindTurbineControl\SavedAgents";
     %StopTrainingCriteria="GlobalStepCount",...
     %StopTrainingValue=4000,...
-trainingStats = train(agent, env, trainOpts);
+
+trainingStats = train(agent, env, trainOpts,"Evaluator",evl);
 %%
 trainingStats.TrainingOptions.MaxEpisodes = 20;
 load("Coefficients2.mat")
@@ -97,6 +119,7 @@ trainingStats.TrainingOptions.MaxEpisodes = 30;
 load("Coefficients3.mat")
 TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
+%%
 trainingStats.TrainingOptions.MaxEpisodes = 40;
 load("Coefficients4.mat")
 TMax = 10000;
@@ -125,7 +148,7 @@ trainingStats.TrainingOptions.MaxEpisodes = 100;
 load("Coefficients5.mat")
 TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
-%%
+
 trainingStats.TrainingOptions.MaxEpisodes = 110;
 load("Coefficients5.mat")
 TMax = 10000;
@@ -162,7 +185,7 @@ trainingStats.TrainingOptions.MaxEpisodes = 190;
 load("Coefficients3.mat")
 TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
-%%
+
 trainingStats.TrainingOptions.MaxEpisodes = 200;
 load("Coefficients1.mat")
 TMax = 10000;
@@ -187,17 +210,17 @@ trainingStats.TrainingOptions.MaxEpisodes = 250;
 load("Coefficients5.mat")
 TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
-%%
+
 trainingStats.TrainingOptions.MaxEpisodes = 260;
 load("Coefficients1.mat")
 TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
-%%
+
 trainingStats.TrainingOptions.MaxEpisodes = 270;
 load("Coefficients1.mat")
 TMax = 10000;
 trainingStats = train(agent, env,trainingStats);
-%%
+
 trainingStats.TrainingOptions.MaxEpisodes = 280;
 load("Coefficients2.mat")
 TMax = 10000;
@@ -229,7 +252,7 @@ trainingStats = train(agent, env,trainingStats);
 trainingStats.TrainingOptions.MaxEpisodes = 350;
 load("Coefficients3.mat")
 TMax = 10000;
-%%
+
 trainingStats = train(agent, env,trainingStats);
 trainingStats.TrainingOptions.MaxEpisodes = 360;
 load("Coefficients1.mat")
