@@ -10,15 +10,20 @@ function [in1,in2] = randomData(mdl)
     choice = randi([1 5],1);
     if choice == 1
                 link = Or17;
+                load("Coefficients1.mat","FAST_InputFileName");
     elseif choice == 2
                 link = No14;
+                load("init14MPSNormal2.mat","FAST_InputFileName");
     elseif choice == 3
                 link = No17;
+                load("Coefficients3.mat","FAST_InputFileName");
     elseif choice == 4
                 link = Ex17;
+                load("Coefficients4.mat","FAST_InputFileName");
     elseif choice == 5
                 link = Ex14;
+                load("Coefficients5.mat","FAST_InputFileName");
     end
-    in1 = In.setVariable('Fast_InputFileName',link,'Workspace',mdl);
+    in1 = In.setVariable('Fast_InputFileName',link,'Workspace',mdl+"/FAST Nonlinear Wind Turbine");
     in2 = In.setVariable('initialObs',randomObs,'Workspace',mdl);
 end

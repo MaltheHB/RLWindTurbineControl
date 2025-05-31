@@ -8,4 +8,5 @@ open_system(mdl_rl);
 agentblk = mdl_rl + "/RL Agent";
 open_system(get_param(agentblk,"Parent"));
 %%
-load("Coefficients1.mat")
+load("Coefficients2.mat")
+TMax = 3600;
