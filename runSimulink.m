@@ -15,7 +15,7 @@ filename1 = fullfile(destination,fname1);
 save(filename1,"CombinedPPOSimOUTLong");
 end
 %% PPO test: 14 MPS Extreme
-for i = 1:7
+for i = 1:10
 filename=sprintf("init14MPSExtreme%1d.mat",i);
 load(filename);
 sim SystemSimulationPPONew;
