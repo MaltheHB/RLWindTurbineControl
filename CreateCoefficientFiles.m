@@ -19,7 +19,7 @@ for k = 1:10
     FAST_InputFileName = foldername;
     TMax = 3600;
     fname1 = sprintf('init14MPSExtreme%1d.mat',k);
-    destination = "C:\Users\malth\Desktop\Vestas OpenFast\Vestas OpenFAST\simulinkModels";
+    destination = "C:\Users\malth\Desktop\Vestas OpenFAST\simulinkModels";
     filename1 = fullfile(destination,fname1);
     save(filename1);
 end
@@ -34,3 +34,14 @@ clear
     destination = "C:\Users\malth\Desktop\Vestas OpenFast\Vestas OpenFAST\simulinkModels";
     filename1 = fullfile(destination,fname1);
     save(filename1);
+%%
+for j = 1:10
+    load("Coefficients.mat");
+    foldername=sprintf('C:\\Users\\malth\\Desktop\\Vestas OpenFAST\\openFAST\\5MW_Land_DLL_WTurb17MPSNormal%1d\\5MW_Land_DLL_WTurb.fst',j);
+    FAST_InputFileName = foldername;
+    TMax = 3600;
+    fname1 = sprintf('init17MPSNormal%1d.mat',j);
+    destination = "C:\Users\malth\Desktop\Vestas OpenFAST\simulinkModels";
+    filename1 = fullfile(destination,fname1);
+    save(filename1);
+end
