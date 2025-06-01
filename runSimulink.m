@@ -46,6 +46,22 @@ for o = 1:10
     filename1 = fullfile(destination,fname1);
     save(filename1,"CombinedPPOSimOUTLong");
 end
+%% PPO test: 17 MPS Extreme
+for h = 1:10
+    filename3=sprintf("init17MPSExtreme%1d.mat",h);
+    load(filename3);
+    sim SystemSimulationPPONew;
+    CombinedPPOSimOUT = cat(2,OutData,CostData,Observations,Actions);
+    fname1 = sprintf('PPOagentResult17MPSExtreme%1d.mat',h);
+    destination = "C:\Users\malth\Desktop\Vestas OpenFAST\RLWindTurbineControl\SimulinkResults";
+    filename1 = fullfile(destination,fname1);
+    save(filename1,"CombinedPPOSimOUT");
+    CombinedPPOSimOUTLong = DEL;
+    fname1 = sprintf('PPOagentDELResults17MPSExtreme%1d.mat',h);
+    destination = "C:\Users\malth\Desktop\Vestas OpenFAST\RLWindTurbineControl\SimulinkResults";
+    filename1 = fullfile(destination,fname1);
+    save(filename1,"CombinedPPOSimOUTLong");
+end
 %%
 sim SystemSimulationNoRL;
 CombinedBaselineSimOut = cat(2,CostData,Observations);
