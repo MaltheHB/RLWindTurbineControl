@@ -109,7 +109,7 @@ hold on
 plot(time,mean10TestRotSpd,'r',LineWidth=1)
 legend('Upper Confidence','Lower Confidence','Mean')
 xlabel('Time[s]')
-ylabel('Rotor Speed[rad/s]')
+ylabel('Rotor Speed[RPM]')
 xlim([0 3600])
 title('PPO NTM 14 m/s Scenario: Rotor Speed(Confidence interval)')
 hold off
@@ -202,12 +202,12 @@ RGB = [0.7 0.7 0.7];
 plot(time2,CombinedRotSpd2,Color=RGB,LineWidth=0.5)
 hold on
 plot(time2,mean10TestRotSpd2,'r',LineWidth=1)
-plot(time,ones(length(time),1).*(overallMeanRotSpd2+overallStdRotSpd2),LineStyle='--',Color='b')
-plot(time,ones(length(time),1).*overallMeanRotSpd2,LineStyle='--',Color='g')
-plot(time,ones(length(time),1).*(overallMeanRotSpd2-overallStdRotSpd2),LineStyle='--',Color='b')
+plot(time,ones(length(time),1).*(overallMeanRotSpd+overallStdRotSpd),LineStyle='--',Color='b')
+plot(time,ones(length(time),1).*overallMeanRotSpd,LineStyle='--',Color='g')
+plot(time,ones(length(time),1).*(overallMeanRotSpd-overallStdRotSpd),LineStyle='--',Color='b')
 legend('Runs','','','','','','','','','','Mean','','Overall mean','Overall \pm Std')
 xlabel('Time[s]')
-ylabel('Rotor Speed[rad/s]')
+ylabel('Rotor Speed[RPM]')
 xlim([0 3600])
 title('PPO ETM 14 m/s Scenario: Rotor Speed(10 runs+mean, overall mean \pm std )')
 hold off
@@ -220,7 +220,7 @@ hold on
 plot(time2,mean10TestRotSpd2,'r',LineWidth=1)
 legend('Upper Confidence','Lower Confidence','Mean')
 xlabel('Time[s]')
-ylabel('Rotor Speed[rad/s]')
+ylabel('Rotor Speed[RPM]')
 xlim([0 3600])
 title('PPO ETM 14 m/s Scenario: Rotor Speed(Confidence Interval)')
 hold off
@@ -235,106 +235,9 @@ for i=1:10
     DELData = load(datafile2);
     TestData = TestData.CombinedPPOSimOUT;
     DELData = DELData.CombinedPPOSimOUTLong;
-    TestResults17MPSNormal.(temp_var1) = TestData;
+    TestResults14MPSExtreme.(temp_var1) = TestData;
     DEL14MPSExtreme.(temp_var2) = DELData;
 end
-%% calc Mean Gen Pwr
-dat1 = TestResults17MPSNormal.OutData_1(:,24);
-dat2 = TestResults17MPSNormal.OutData_2(:,24);
-dat3 = TestResults17MPSNormal.OutData_3(:,24);
-dat4 = TestResults17MPSNormal.OutData_4(:,24);
-dat5 = TestResults17MPSNormal.OutData_5(:,24);
-dat6 = TestResults17MPSNormal.OutData_6(:,24);
-dat7 = TestResults17MPSNormal.OutData_7(:,24);
-dat8 = TestResults17MPSNormal.OutData_8(:,24);
-dat9 = TestResults17MPSNormal.OutData_9(:,24);
-dat10 = TestResults17MPSNormal.OutData_10(:,24);
-CombinedGenPwr = cat(2,dat1,dat2,dat3,dat4,dat5,dat6,dat7,dat8,dat9,dat10);
-mean10TestGenPwr = mean(CombinedGenPwr,2);
-std10TestGenPwr = std(CombinedGenPwr,0,2);
-overallMeanGenPwr = mean(mean10TestGenPwr);
-overallStdGenPwr = mean(std10TestGenPwr);
-STDErr10TestGenPwr = std10TestGenPwr/sqrt(10);
-CI9510TestGenPwr = tinv([0.025 0.975],10-1);
-GenPwr10TestCI95 = bsxfun(@times,STDErr10TestGenPwr,CI9510TestGenPwr);
-%% calc Mean Rotor Speed
-dat1 = TestResults17MPSNormal.OutData_1(:,6)*(pi/30);
-dat2 = TestResults17MPSNormal.OutData_2(:,6)*(pi/30);
-dat3 = TestResults17MPSNormal.OutData_3(:,6)*(pi/30);
-dat4 = TestResults17MPSNormal.OutData_4(:,6)*(pi/30);
-dat5 = TestResults17MPSNormal.OutData_5(:,6)*(pi/30);
-dat6 = TestResults17MPSNormal.OutData_6(:,6)*(pi/30);
-dat7 = TestResults17MPSNormal.OutData_7(:,6)*(pi/30);
-dat8 = TestResults17MPSNormal.OutData_8(:,6)*(pi/30);
-dat9 = TestResults17MPSNormal.OutData_9(:,6)*(pi/30);
-dat10 = TestResults17MPSNormal.OutData_10(:,6)*(pi/30);
-CombinedRotSpd = cat(2,dat1,dat2,dat3,dat4,dat5,dat6,dat7,dat8,dat9,dat10);
-mean10TestRotSpd = mean(CombinedRotSpd,2);
-std10TestRotSpd = std(CombinedRotSpd,0,2);
-overallMeanRotSpd = mean(mean10TestRotSpd);
-overallStdRotSpd = mean(std10TestRotSpd);
-STDErr10TestRotSpd = std10TestRotSpd/sqrt(10);
-CI9510TestRotSpd = tinv([0.025 0.975],10-1);
-RotSpd10TestCI95 = bsxfun(@times,STDErr10TestRotSpd,CI9510TestRotSpd);
-%%
-time = TestResults17MPSNormal.OutData_1(:,1);
-RGB = [0.7 0.7 0.7];
-figure(Name='PPO17NTMGenPower')
-plot(time,CombinedGenPwr,Color=RGB,LineWidth=0.5)
-hold on
-plot(time,mean10TestGenPwr,'r',LineWidth=1)
-plot(time,ones(length(time),1).*(overallMeanGenPwr+overallStdGenPwr),LineStyle='--',Color='b')
-plot(time,ones(length(time),1).*overallMeanGenPwr,LineStyle='--',Color='g')
-plot(time,ones(length(time),1).*(overallMeanGenPwr-overallStdGenPwr),LineStyle='--',Color='b')
-legend('Runs','','','','','','','','','','Mean','','Overall mean','Overall \pm Std')
-xlabel('Time[s]')
-ylabel('Generator Power[kW]')
-xlim([0 3600])
-title('PPO NTM 17 m/s Scenario: Generator Power(10 runs+mean, overall mean \pm std )')
-hold off
-%%
-time = TestResults17MPSNormal.OutData_1(:,1);
-RGB = [0.7 0.7 0.7];
-figure
-plot(time,mean10TestGenPwr-GenPwr10TestCI95,Color=RGB,LineWidth=0.5)
-hold on
-plot(time,mean10TestGenPwr,'r',LineWidth=1)
-legend('Upper Confidence','Lower Confidence','Mean')
-xlabel('Time[s]')
-
-ylabel('Generator Power[kW]')
-xlim([0 3600])
-title('PPO NTM 17 m/s Scenario: Generator Power(Confidence Interval)')
-hold off
-%%
-time = TestResults17MPSNormal.OutData_1(:,1);
-RGB = [0.7 0.7 0.7];
-figure(Name='PPO17NTMRotSpeed')
-plot(time,CombinedRotSpd,Color=RGB,LineWidth=0.5)
-hold on
-plot(time,mean10TestRotSpd,'r',LineWidth=1)
-plot(time,ones(length(time),1).*(overallMeanRotSpd+overallStdRotSpd),LineStyle='--',Color='b')
-plot(time,ones(length(time),1).*overallMeanRotSpd,LineStyle='--',Color='g')
-plot(time,ones(length(time),1).*(overallMeanRotSpd-overallStdRotSpd),LineStyle='--',Color='b')
-legend('Runs','','','','','','','','','','Mean','','Overall mean','Overall \pm Std')
-xlabel('Time[s]')
-ylabel('Rotor Speed[rad/s]')
-xlim([0 3600])
-title('PPO NTM 17 m/s Scenario: Rotor Speed(10 runs+mean, overall mean \pm std )')
-hold off
-%%
-time = TestResults14MPSNormal.OutData_1(:,1);
-RGB = [0.7 0.7 0.7];
-figure
-plot(time,mean10TestRotSpd+RotSpd10TestCI95,':',Color=RGB,LineWidth=0.5)
-hold on
-plot(time,mean10TestRotSpd,'r',LineWidth=1)
-legend('Upper Confidence','Lower Confidence','Mean')
-xlabel('Time[s]')
-ylabel('Rotor Speed[rad/s]')
-xlim([0 3600])
-title('PPO NTM 17 m/s Scenario: Rotor Speed(Confidence interval)')
-hold off
 %% Make plots PPO 17m/s Extreme
 for i=1:10
     temp_var1 = strcat('OutData_',num2str(i));
@@ -345,76 +248,6 @@ for i=1:10
     DELData = load(datafile2);
     TestData = TestData.CombinedPPOSimOUT;
     DELData = DELData.CombinedPPOSimOUTLong;
-    TestResults17MPSExtreme.(temp_var1) = TestData;
+    TestResults14MPSExtreme.(temp_var1) = TestData;
     DEL14MPSExtreme.(temp_var2) = DELData;
 end
-%% calc Mean Gen Pwr
-dat12 = TestResults17MPSExtreme.OutData_1(:,24);
-dat22 = TestResults17MPSExtreme.OutData_2(:,24);
-dat32 = TestResults17MPSExtreme.OutData_3(:,24);
-dat42 = TestResults17MPSExtreme.OutData_4(:,24);
-dat52 = TestResults17MPSExtreme.OutData_5(:,24);
-dat62 = TestResults17MPSExtreme.OutData_6(:,24);
-dat72 = TestResults17MPSExtreme.OutData_7(:,24);
-dat82 = TestResults17MPSExtreme.OutData_8(:,24);
-dat92 = TestResults17MPSExtreme.OutData_9(:,24);
-dat102 = TestResults17MPSExtreme.OutData_10(:,24);
-CombinedGenPwr2 = cat(2,dat12,dat22,dat32,dat42,dat52,dat62,dat72,dat82,dat92,dat102);
-mean10TestGenPwr2 = mean(CombinedGenPwr2,2);
-std10TestGenPwr2 = std(CombinedGenPwr2,0,2);
-overallMeanGenPwr2 = mean(mean10TestGenPwr2);
-overallStdGenPwr2 = mean(std10TestGenPwr2);
-STDErr10TestGenPwr2 = std10TestGenPwr2/sqrt(10);
-CI9510TestGenPwr2 = tinv([0.025 0.975],10-1);
-GenPwr210TestCI95 = bsxfun(@times,STDErr10TestGenPwr2,CI9510TestGenPwr2);
-%% calc Mean Rotor Speed
-dat12 = TestResults17MPSExtreme.OutData_1(:,6)*(pi/30);
-dat22 = TestResults17MPSExtreme.OutData_2(:,6)*(pi/30);
-dat32 = TestResults17MPSExtreme.OutData_3(:,6)*(pi/30);
-dat42 = TestResults17MPSExtreme.OutData_4(:,6)*(pi/30);
-dat52 = TestResults17MPSExtreme.OutData_5(:,6)*(pi/30);
-dat62 = TestResults17MPSExtreme.OutData_6(:,6)*(pi/30);
-dat72 = TestResults17MPSExtreme.OutData_7(:,6)*(pi/30);
-dat82 = TestResults17MPSExtreme.OutData_8(:,6)*(pi/30);
-dat92 = TestResults17MPSExtreme.OutData_9(:,6)*(pi/30);
-dat102 = TestResults17MPSExtreme.OutData_10(:,6)*(pi/30);
-CombinedRotSpd2 = cat(2,dat12,dat22,dat32,dat42,dat52,dat62,dat72,dat82,dat92,dat102);
-mean10TestRotSpd2 = mean(CombinedRotSpd2,2);
-std10TestRotSpd2 = std(CombinedRotSpd2,0,2);
-overallMeanRotSpd2 = mean(mean10TestRotSpd2);
-overallStdRotSpd2 = mean(std10TestRotSpd2);
-STDErr10TestRotSpd2 = std10TestRotSpd2/sqrt(10);
-CI9510TestRotSpd2 = tinv([0.025 0.975],10-1);
-RotSpd210TestCI95 = bsxfun(@times,STDErr10TestRotSpd2,CI9510TestRotSpd2);
-%%
-time2 = TestResults17MPSExtreme.OutData_1(:,1);
-
-RGB = [0.7 0.7 0.7];
-plot(time2,CombinedGenPwr2,Color=RGB,LineWidth=0.5)
-hold on
-plot(time2,mean10TestGenPwr2,'r',LineWidth=1)
-plot(time2,ones(length(time),1).*(overallMeanGenPwr2+overallStdGenPwr2),LineStyle='--',Color='b')
-plot(time2,ones(length(time),1).*overallMeanGenPwr2,LineStyle='--',Color='g')
-plot(time2,ones(length(time),1).*(overallMeanGenPwr2-overallStdGenPwr2),LineStyle='--',Color='b')
-legend('Runs','','','','','','','','','','Mean','','Overall mean','Overall \pm Std')
-xlabel('Time[s]')
-ylabel('Generator Power[kW]')
-xlim([0 3600])
-title('PPO ETM 17 m/s Scenario: Generator Power(10 runs+mean, overall mean \pm std )')
-hold off
-%%
-time2 = TestResults17MPSExtreme.OutData_1(:,1);
-RGB = [0.7 0.7 0.7];
-
-plot(time2,CombinedRotSpd2,Color=RGB,LineWidth=0.5)
-hold on
-plot(time2,mean10TestRotSpd2,'r',LineWidth=1)
-plot(time2,ones(length(time),1).*(overallMeanRotSpd2+overallStdRotSpd2),LineStyle='--',Color='b')
-plot(time2,ones(length(time),1).*overallMeanRotSpd2,LineStyle='--',Color='g')
-plot(time2,ones(length(time),1).*(overallMeanRotSpd2-overallStdRotSpd2),LineStyle='--',Color='b')
-legend('Runs','','','','','','','','','','Mean','','Overall mean','Overall \pm Std')
-xlabel('Time[s]')
-ylabel('Rotor Speed[rad/s]')
-xlim([0 3600])
-title('PPO ETM 17 m/s Scenario: Rotor Speed(10 runs+mean, overall mean \pm std )')
-hold off
