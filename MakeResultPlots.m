@@ -26,6 +26,10 @@ dat9 = TestResults14MPSNormal.OutData_9(:,24);
 dat10 = TestResults14MPSNormal.OutData_10(:,24);
 CombinedGenPwr = cat(2,dat1,dat2,dat3,dat4,dat5,dat6,dat7,dat8,dat9,dat10);
 mean10TestGenPwr = mean(CombinedGenPwr,2);
+std10TestGenPwr = std(CombinedGenPwr,0,2);
+STDErr10TestGenPwr = std10TestGenPwr/sqrt(10);
+CI9510TestGenPwr = tinv([0.025 0.975],10-1);
+GenPwr10TestCI95 = bsxfun(@times,STDErr10TestGenPwr,CI9510TestGenPwr);
 %% calc Mean Rotor Speed
 dat1 = TestResults14MPSNormal.OutData_1(:,6);
 dat2 = TestResults14MPSNormal.OutData_2(:,6);
@@ -39,8 +43,10 @@ dat9 = TestResults14MPSNormal.OutData_9(:,6);
 dat10 = TestResults14MPSNormal.OutData_10(:,6);
 CombinedRotSpd = cat(2,dat1,dat2,dat3,dat4,dat5,dat6,dat7,dat8,dat9,dat10);
 mean10TestRotSpd = mean(CombinedRotSpd,2);
-meanmean10TestRotSpd = mean(CombinedRotSpd,1);  
 std10TestRotSpd = std(CombinedRotSpd,0,2);
+STDErr10TestRotSpd = std10TestRotSpd/sqrt(10);
+CI9510TestRotSpd = tinv([0.025 0.975],10-1);
+RotSpd10TestCI95 = bsxfun(@times,STDErr10TestRotSpd,CI9510TestRotSpd);
 %%
 RotSpdstdlower = mean10TestRotSpd-std10TestRotSpd;
 RotSpdstdupper = mean10TestRotSpd+std10TestRotSpd;
@@ -61,6 +67,19 @@ hold off
 time = TestResults14MPSNormal.OutData_1(:,1);
 RGB = [0.7 0.7 0.7];
 figure
+plot(time,mean10TestGenPwr-GenPwr10TestCI95,Color=RGB,LineWidth=0.5)
+hold on
+plot(time,mean10TestGenPwr,'r',LineWidth=1)
+legend('Upper Confidence','Lower Confidence','Mean')
+xlabel('Time[s]')
+ylabel('Generator Power[kW]')
+xlim([0 3600])
+title('PPO NTM 14 m/s Scenario: Generator Power(Confidence Interval)')
+hold off
+%%
+time = TestResults14MPSNormal.OutData_1(:,1);
+RGB = [0.7 0.7 0.7];
+figure
 plot(time,CombinedRotSpd,Color=RGB,LineWidth=0.5)
 hold on
 plot(time,mean10TestRotSpd,'r',LineWidth=1)
@@ -74,11 +93,10 @@ hold off
 time = TestResults14MPSNormal.OutData_1(:,1);
 RGB = [0.7 0.7 0.7];
 figure
-plot(time,RotSpdstdlower,':',Color=RGB,LineWidth=0.5)
+plot(time,mean10TestRotSpd+RotSpd10TestCI95,':',Color=RGB,LineWidth=0.5)
 hold on
 plot(time,mean10TestRotSpd,'r',LineWidth=1)
-plot(time,RotSpdstdupper,':',Color=RGB,LineWidth=0.5)
-legend('Upper Confidence','Mean','Lower Confidence')
+legend('Upper Confidence','Lower Confidence','Mean')
 xlabel('Time[s]')
 ylabel('Rotor Speed[RPM]')
 xlim([0 3600])
@@ -112,6 +130,10 @@ dat92 = TestResults14MPSExtreme.OutData_9(:,24);
 dat102 = TestResults14MPSExtreme.OutData_10(:,24);
 CombinedGenPwr2 = cat(2,dat12,dat22,dat32,dat42,dat52,dat62,dat72,dat82,dat92,dat102);
 mean10TestGenPwr2 = mean(CombinedGenPwr2,2);
+std10TestGenPwr2 = std(CombinedGenPwr2,0,2);
+STDErr10TestGenPwr2 = std10TestGenPwr2/sqrt(10);
+CI9510TestGenPwr2 = tinv([0.025 0.975],10-1);
+GenPwr210TestCI95 = bsxfun(@times,STDErr10TestGenPwr2,CI9510TestGenPwr2);
 %% calc Mean Rotor Speed
 dat12 = TestResults14MPSExtreme.OutData_1(:,6);
 dat22 = TestResults14MPSExtreme.OutData_2(:,6);
@@ -125,12 +147,15 @@ dat92 = TestResults14MPSExtreme.OutData_9(:,6);
 dat102 = TestResults14MPSExtreme.OutData_10(:,6);
 CombinedRotSpd2 = cat(2,dat12,dat22,dat32,dat42,dat52,dat62,dat72,dat82,dat92,dat102);
 mean10TestRotSpd2 = mean(CombinedRotSpd2,2);
+std10TestRotSpd2 = std(CombinedRotSpd2,0,2);
+STDErr10TestRotSpd2 = std10TestRotSpd2/sqrt(10);
+CI9510TestRotSpd2 = tinv([0.025 0.975],10-1);
+RotSpd210TestCI95 = bsxfun(@times,STDErr10TestRotSpd2,CI9510TestRotSpd2);
 %%
 time2 = TestResults14MPSExtreme.OutData_1(:,1);
 
-
-plot(time2,CombinedGenPwr2,Color=RGB,LineWidth=0.5)
 RGB = [0.7 0.7 0.7];
+plot(time2,CombinedGenPwr2,Color=RGB,LineWidth=0.5)
 hold on
 plot(time2,mean10TestGenPwr2,'r',LineWidth=1)
 legend('Runs','','','','','','','','','','Mean')
@@ -142,9 +167,21 @@ hold off
 %%
 time2 = TestResults14MPSExtreme.OutData_1(:,1);
 
+RGB = [0.7 0.7 0.7];
+plot(time2,mean10TestGenPwr2+GenPwr210TestCI95,Color=RGB,LineWidth=0.5)
+hold on
+plot(time2,mean10TestGenPwr2,'r',LineWidth=1)
+legend('Upper Confidence','Lower Confidence','Mean')
+xlabel('Time[s]')
+ylabel('Generator Power[kW]')
+xlim([0 3600])
+title('PPO ETM 14 m/s Scenario: Generator Power(Confidence Interval)')
+hold off
+%%
+time2 = TestResults14MPSExtreme.OutData_1(:,1);
+RGB = [0.7 0.7 0.7];
 
 plot(time2,CombinedRotSpd2,Color=RGB,LineWidth=0.5)
-RGB = [0.7 0.7 0.7];
 hold on
 plot(time2,mean10TestRotSpd2,'r',LineWidth=1)
 legend('Runs','','','','','','','','','','Mean')
@@ -152,4 +189,17 @@ xlabel('Time[s]')
 ylabel('Rotor Speed[RPM]')
 xlim([0 3600])
 title('PPO ETM 14 m/s Scenario: Rotor Speed(10 Runs+Mean)')
+hold off
+%%
+time2 = TestResults14MPSExtreme.OutData_1(:,1);
+RGB = [0.7 0.7 0.7];
+
+plot(time2,mean10TestRotSpd2+RotSpd210TestCI95,Color=RGB,LineWidth=0.5)
+hold on
+plot(time2,mean10TestRotSpd2,'r',LineWidth=1)
+legend('Upper Confidence','Lower Confidence','Mean')
+xlabel('Time[s]')
+ylabel('Rotor Speed[RPM]')
+xlim([0 3600])
+title('PPO ETM 14 m/s Scenario: Rotor Speed(Confidence Interval)')
 hold off
