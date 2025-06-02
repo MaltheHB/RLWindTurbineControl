@@ -2,9 +2,9 @@
 % ------------------------------------------------------------
 clc
 clear
-load("Coefficients1.mat")
+load("Coefficients.mat")
 % Actor Network
-obsDim = 8;
+obsDim = 9;
 actDim = 2;
 
 obsInfo = rlNumericSpec([obsDim 1], 'Name','observations');
@@ -88,6 +88,7 @@ trainOpts = rlTrainingOptions( ...
     %StopTrainingCriteria="GlobalStepCount",...
     %StopTrainingValue=4000,...
 trainingStats = train(agent, env, trainOpts);
+
 %%
 trainingStats.TrainingOptions.MaxEpisodes = 20;
 load("Coefficients2.mat")
