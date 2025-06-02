@@ -39,8 +39,8 @@ dat10 = TestResults14MPSNormal.OutData_10(:,24);
 CombinedGenPwr = cat(2,dat1,dat2,dat3,dat4,dat5,dat6,dat7,dat8,dat9,dat10);
 mean10TestGenPwr = mean(CombinedGenPwr,2);
 std10TestGenPwr = std(CombinedGenPwr,0,2);
-overallMeanGenPwr = mean(mean10TestGenPwr);
-overallStdGenPwr = mean(std10TestGenPwr);
+overallStdGenPwr = std(CombinedGenPwr,0,"all");
+overallMeanGenPwr = mean(CombinedGenPwr,"all");
 STDErr10TestGenPwr = std10TestGenPwr/sqrt(10);
 CI9510TestGenPwr = tinv([0.025 0.975],10-1);
 GenPwr10TestCI95 = bsxfun(@times,STDErr10TestGenPwr,CI9510TestGenPwr);
@@ -58,8 +58,8 @@ dat10 = TestResults14MPSNormal.OutData_10(:,6)*(pi/30);
 CombinedRotSpd = cat(2,dat1,dat2,dat3,dat4,dat5,dat6,dat7,dat8,dat9,dat10);
 mean10TestRotSpd = mean(CombinedRotSpd,2);
 std10TestRotSpd = std(CombinedRotSpd,0,2);
-overallMeanRotSpd = mean(mean10TestRotSpd);
-overallStdRotSpd = mean(std10TestRotSpd);
+overallMeanRotSpd = mean(CombinedRotSpd,"all");
+overallStdRotSpd = std(CombinedRotSpd,0,"all");
 STDErr10TestRotSpd = std10TestRotSpd/sqrt(10);
 CI9510TestRotSpd = tinv([0.025 0.975],10-1);
 RotSpd10TestCI95 = bsxfun(@times,STDErr10TestRotSpd,CI9510TestRotSpd);
@@ -168,7 +168,7 @@ CombinedGenPwr2 = cat(2,dat12,dat22,dat32,dat42,dat52,dat62,dat72,dat82,dat92,da
 mean10TestGenPwr2 = mean(CombinedGenPwr2,2);
 std10TestGenPwr2 = std(CombinedGenPwr2,0,2);
 overallMeanGenPwr2 = mean(mean10TestGenPwr2);
-overallStdGenPwr2 = mean(std10TestGenPwr2);
+overallStdGenPwr2 = std(CombinedGenPwr2,0,"all");
 STDErr10TestGenPwr2 = std10TestGenPwr2/sqrt(10);
 CI9510TestGenPwr2 = tinv([0.025 0.975],10-1);
 GenPwr210TestCI95 = bsxfun(@times,STDErr10TestGenPwr2,CI9510TestGenPwr2);
@@ -187,7 +187,7 @@ CombinedRotSpd2 = cat(2,dat12,dat22,dat32,dat42,dat52,dat62,dat72,dat82,dat92,da
 mean10TestRotSpd2 = mean(CombinedRotSpd2,2);
 std10TestRotSpd2 = std(CombinedRotSpd2,0,2);
 overallMeanRotSpd2 = mean(mean10TestRotSpd2);
-overallStdRotSpd2 = mean(std10TestRotSpd2);
+overallStdRotSpd2 = std(CombinedRotSpd2,0,"all");
 STDErr10TestRotSpd2 = std10TestRotSpd2/sqrt(10);
 CI9510TestRotSpd2 = tinv([0.025 0.975],10-1);
 RotSpd210TestCI95 = bsxfun(@times,STDErr10TestRotSpd2,CI9510TestRotSpd2);
@@ -198,9 +198,9 @@ RGB = [0.7 0.7 0.7];
 plot(time2,CombinedGenPwr2,Color=RGB,LineWidth=0.5)
 hold on
 plot(time2,mean10TestGenPwr2,'r',LineWidth=1)
-plot(time,ones(length(time),1).*(overallMeanGenPwr2+overallStdGenPwr2),LineStyle='--',Color='b')
-plot(time,ones(length(time),1).*overallMeanGenPwr2,LineStyle='--',Color='g')
-plot(time,ones(length(time),1).*(overallMeanGenPwr2-overallStdGenPwr2),LineStyle='--',Color='b')
+plot(time2,ones(length(time),1).*(overallMeanGenPwr2+overallStdGenPwr2),LineStyle='--',Color='b')
+plot(time2,ones(length(time),1).*overallMeanGenPwr2,LineStyle='--',Color='g')
+plot(time2,ones(length(time),1).*(overallMeanGenPwr2-overallStdGenPwr2),LineStyle='--',Color='b')
 legend('Runs','','','','','','','','','','Mean','','Overall mean','Overall \pm Std')
 xlabel('Time[s]')
 ylabel('Generator Power[kW]')
@@ -291,7 +291,7 @@ CombinedGenPwr = cat(2,dat1,dat2,dat3,dat4,dat5,dat6,dat7,dat8,dat9,dat10);
 mean10TestGenPwr = mean(CombinedGenPwr,2);
 std10TestGenPwr = std(CombinedGenPwr,0,2);
 overallMeanGenPwr = mean(mean10TestGenPwr);
-overallStdGenPwr = mean(std10TestGenPwr);
+overallStdGenPwr = std(CombinedGenPwr,0,"all");
 STDErr10TestGenPwr = std10TestGenPwr/sqrt(10);
 CI9510TestGenPwr = tinv([0.025 0.975],10-1);
 GenPwr10TestCI95 = bsxfun(@times,STDErr10TestGenPwr,CI9510TestGenPwr);
@@ -310,7 +310,7 @@ CombinedRotSpd = cat(2,dat1,dat2,dat3,dat4,dat5,dat6,dat7,dat8,dat9,dat10);
 mean10TestRotSpd = mean(CombinedRotSpd,2);
 std10TestRotSpd = std(CombinedRotSpd,0,2);
 overallMeanRotSpd = mean(mean10TestRotSpd);
-overallStdRotSpd = mean(std10TestRotSpd);
+overallStdRotSpd = std(CombinedRotSpd,0,"all");
 STDErr10TestRotSpd = std10TestRotSpd/sqrt(10);
 CI9510TestRotSpd = tinv([0.025 0.975],10-1);
 RotSpd10TestCI95 = bsxfun(@times,STDErr10TestRotSpd,CI9510TestRotSpd);
@@ -401,7 +401,7 @@ CombinedGenPwr2 = cat(2,dat12,dat22,dat32,dat42,dat52,dat62,dat72,dat82,dat92,da
 mean10TestGenPwr2 = mean(CombinedGenPwr2,2);
 std10TestGenPwr2 = std(CombinedGenPwr2,0,2);
 overallMeanGenPwr2 = mean(mean10TestGenPwr2);
-overallStdGenPwr2 = mean(std10TestGenPwr2);
+overallStdGenPwr2 = std(CombinedGenPwr2,0,"all");
 STDErr10TestGenPwr2 = std10TestGenPwr2/sqrt(10);
 CI9510TestGenPwr2 = tinv([0.025 0.975],10-1);
 GenPwr210TestCI95 = bsxfun(@times,STDErr10TestGenPwr2,CI9510TestGenPwr2);
@@ -420,7 +420,7 @@ CombinedRotSpd2 = cat(2,dat12,dat22,dat32,dat42,dat52,dat62,dat72,dat82,dat92,da
 mean10TestRotSpd2 = mean(CombinedRotSpd2,2);
 std10TestRotSpd2 = std(CombinedRotSpd2,0,2);
 overallMeanRotSpd2 = mean(mean10TestRotSpd2);
-overallStdRotSpd2 = mean(std10TestRotSpd2);
+overallStdRotSpd2 = std(CombinedRotSpd2,0,"all");
 STDErr10TestRotSpd2 = std10TestRotSpd2/sqrt(10);
 CI9510TestRotSpd2 = tinv([0.025 0.975],10-1);
 RotSpd210TestCI95 = bsxfun(@times,STDErr10TestRotSpd2,CI9510TestRotSpd2);
