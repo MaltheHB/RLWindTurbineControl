@@ -11,7 +11,19 @@ for i=1:10
     TestResults14MPSNormal.(temp_var1) = TestData;
     DEL14MPSNormal.(temp_var2) = DELData;
 end
-
+%% DEL Results 14MPS Normal
+del1 = DEL14MPSNormal.DEL_1;
+del2 = DEL14MPSNormal.DEL_2;
+del3 = DEL14MPSNormal.DEL_3;
+del4 = DEL14MPSNormal.DEL_4;
+del5 = DEL14MPSNormal.DEL_5;
+del6 = DEL14MPSNormal.DEL_6;
+del7 = DEL14MPSNormal.DEL_7;
+del8 = DEL14MPSNormal.DEL_8;
+del9 = DEL14MPSNormal.DEL_9;
+del10 = DEL14MPSNormal.DEL_10;
+PPODELNTM14 = cat(1,del1,del2,del3,del4,del5,del6,del7,del8,del9,del10);
+meanPPODELNTM14 = mean(PPODELNTM14,1,"omitmissing");
 
 %% calc Mean Gen Pwr
 dat1 = TestResults14MPSNormal.OutData_1(:,24);
@@ -126,6 +138,19 @@ for i=1:10
     TestResults14MPSExtreme.(temp_var1) = TestData;
     DEL14MPSExtreme.(temp_var2) = DELData;
 end
+%% DEL Results 14MPS Extreme
+del1 = DEL14MPSExtreme.DEL_1;
+del2 = DEL14MPSExtreme.DEL_2;
+del3 = DEL14MPSExtreme.DEL_3;
+del4 = DEL14MPSExtreme.DEL_4;
+del5 = DEL14MPSExtreme.DEL_5;
+del6 = DEL14MPSExtreme.DEL_6;
+del7 = DEL14MPSExtreme.DEL_7;
+del8 = DEL14MPSExtreme.DEL_8;
+del9 = DEL14MPSExtreme.DEL_9;
+del10 = DEL14MPSExtreme.DEL_10;
+PPODELETM14 = cat(1,del1,del2,del3,del4,del5,del6,del7,del8,del9,del10);
+meanPPODELETM14 = mean(PPODELETM14,1,"omitmissing");
 
 
 %% calc Mean Gen Pwr
@@ -236,8 +261,21 @@ for i=1:10
     TestData = TestData.CombinedPPOSimOUT;
     DELData = DELData.CombinedPPOSimOUTLong;
     TestResults17MPSNormal.(temp_var1) = TestData;
-    DEL14MPSExtreme.(temp_var2) = DELData;
+    DEL17MPSNormal.(temp_var2) = DELData;
 end
+%% DEL Results 17MPS Normal
+del1 = DEL17MPSNormal.DEL_1;
+del2 = DEL17MPSNormal.DEL_2;
+del3 = DEL17MPSNormal.DEL_3;
+del4 = DEL17MPSNormal.DEL_4;
+del5 = DEL17MPSNormal.DEL_5;
+del6 = DEL17MPSNormal.DEL_6;
+del7 = DEL17MPSNormal.DEL_7;
+del8 = DEL17MPSNormal.DEL_8;
+del9 = DEL17MPSNormal.DEL_9;
+del10 = DEL17MPSNormal.DEL_10;
+PPODELNTM17 = cat(1,del1,del2,del3,del4,del5,del6,del7,del8,del9,del10);
+meanPPODELNTM17 = mean(PPODELNTM17,1,"omitmissing");
 %% calc Mean Gen Pwr
 dat1 = TestResults17MPSNormal.OutData_1(:,24);
 dat2 = TestResults17MPSNormal.OutData_2(:,24);
@@ -346,7 +384,7 @@ for i=1:10
     TestData = TestData.CombinedPPOSimOUT;
     DELData = DELData.CombinedPPOSimOUTLong;
     TestResults17MPSExtreme.(temp_var1) = TestData;
-    DEL14MPSExtreme.(temp_var2) = DELData;
+    DEL17MPSExtreme.(temp_var2) = DELData;
 end
 %% calc Mean Gen Pwr
 dat12 = TestResults17MPSExtreme.OutData_1(:,24);
@@ -418,3 +456,19 @@ ylabel('Rotor Speed[rad/s]')
 xlim([0 3600])
 title('PPO ETM 17 m/s Scenario: Rotor Speed(10 runs+mean, overall mean \pm std )')
 hold off
+%% DEL Results 17MPS Extreme
+del1 = DEL17MPSExtreme.DEL_1;
+del2 = DEL17MPSExtreme.DEL_2;
+del3 = DEL17MPSExtreme.DEL_3;
+del4 = DEL17MPSExtreme.DEL_4;
+del5 = DEL17MPSExtreme.DEL_5;
+del6 = DEL17MPSExtreme.DEL_6;
+del7 = DEL17MPSExtreme.DEL_7;
+del8 = DEL17MPSExtreme.DEL_8;
+del9 = DEL17MPSExtreme.DEL_9;
+del10 = DEL17MPSExtreme.DEL_10;
+PPODELETM17 = cat(1,del1,del2,del3,del4,del5,del6,del7,del8,del9,del10);
+meanPPODELETM17 = mean(PPODELETM17,1,"omitmissing");
+%%
+fi = "PPODELFullResults.mat";
+save(fi,"meanPPODELNTM14","meanPPODELETM14","meanPPODELNTM17","meanPPODELETM17","PPODELNTM14","PPODELETM14","PPODELNTM17","PPODELETM17")
