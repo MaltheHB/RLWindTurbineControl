@@ -26,16 +26,16 @@ PPODELNTM14 = cat(1,del1,del2,del3,del4,del5,del6,del7,del8,del9,del10);
 meanPPODELNTM14 = mean(PPODELNTM14,1,"omitmissing");
 
 %% calc Mean Gen Pwr
-dat1 = TestResults14MPSNormal.OutData_1(:,24);
-dat2 = TestResults14MPSNormal.OutData_2(:,24);
-dat3 = TestResults14MPSNormal.OutData_3(:,24);
-dat4 = TestResults14MPSNormal.OutData_4(:,24);
-dat5 = TestResults14MPSNormal.OutData_5(:,24);
-dat6 = TestResults14MPSNormal.OutData_6(:,24);
-dat7 = TestResults14MPSNormal.OutData_7(:,24);
-dat8 = TestResults14MPSNormal.OutData_8(:,24);
-dat9 = TestResults14MPSNormal.OutData_9(:,24);
-dat10 = TestResults14MPSNormal.OutData_10(:,24);
+dat1 = TestResults14MPSNormal.OutData_1(:,24)/1000;
+dat2 = TestResults14MPSNormal.OutData_2(:,24)/1000;
+dat3 = TestResults14MPSNormal.OutData_3(:,24)/1000;
+dat4 = TestResults14MPSNormal.OutData_4(:,24)/1000;
+dat5 = TestResults14MPSNormal.OutData_5(:,24)/1000;
+dat6 = TestResults14MPSNormal.OutData_6(:,24)/1000;
+dat7 = TestResults14MPSNormal.OutData_7(:,24)/1000;
+dat8 = TestResults14MPSNormal.OutData_8(:,24)/1000;
+dat9 = TestResults14MPSNormal.OutData_9(:,24)/1000;
+dat10 = TestResults14MPSNormal.OutData_10(:,24)/1000;
 CombinedGenPwr = cat(2,dat1,dat2,dat3,dat4,dat5,dat6,dat7,dat8,dat9,dat10);
 mean10TestGenPwr = mean(CombinedGenPwr,2);
 std10TestGenPwr = std(CombinedGenPwr,0,2);
@@ -78,7 +78,7 @@ plot(time,ones(length(time),1).*overallMeanGenPwr,LineStyle='--',Color='g')
 plot(time,ones(length(time),1).*(overallMeanGenPwr-overallStdGenPwr),LineStyle='--',Color='b')
 legend('Runs','','','','','','','','','','Mean','','Overall mean','Overall \pm Std')
 xlabel('Time[s]')
-ylabel('Generator Power[kW]')
+ylabel('Generator Power[MW]')
 xlim([0 3600])
 title('PPO NTM 14 m/s Scenario: Generator Power(10 runs+mean, overall mean \pm std )')
 hold off
@@ -154,16 +154,16 @@ meanPPODELETM14 = mean(PPODELETM14,1,"omitmissing");
 
 
 %% calc Mean Gen Pwr
-dat12 = TestResults14MPSExtreme.OutData_1(:,24);
-dat22 = TestResults14MPSExtreme.OutData_2(:,24);
-dat32 = TestResults14MPSExtreme.OutData_3(:,24);
-dat42 = TestResults14MPSExtreme.OutData_4(:,24);
-dat52 = TestResults14MPSExtreme.OutData_5(:,24);
-dat62 = TestResults14MPSExtreme.OutData_6(:,24);
-dat72 = TestResults14MPSExtreme.OutData_7(:,24);
-dat82 = TestResults14MPSExtreme.OutData_8(:,24);
-dat92 = TestResults14MPSExtreme.OutData_9(:,24);
-dat102 = TestResults14MPSExtreme.OutData_10(:,24);
+dat12 = TestResults14MPSExtreme.OutData_1(:,24)/1000;
+dat22 = TestResults14MPSExtreme.OutData_2(:,24)/1000;
+dat32 = TestResults14MPSExtreme.OutData_3(:,24)/1000;
+dat42 = TestResults14MPSExtreme.OutData_4(:,24)/1000;
+dat52 = TestResults14MPSExtreme.OutData_5(:,24)/1000;
+dat62 = TestResults14MPSExtreme.OutData_6(:,24)/1000;
+dat72 = TestResults14MPSExtreme.OutData_7(:,24)/1000;
+dat82 = TestResults14MPSExtreme.OutData_8(:,24)/1000;
+dat92 = TestResults14MPSExtreme.OutData_9(:,24)/1000;
+dat102 = TestResults14MPSExtreme.OutData_10(:,24)/1000;
 CombinedGenPwr2 = cat(2,dat12,dat22,dat32,dat42,dat52,dat62,dat72,dat82,dat92,dat102);
 mean10TestGenPwr2 = mean(CombinedGenPwr2,2);
 std10TestGenPwr2 = std(CombinedGenPwr2,0,2);
@@ -198,12 +198,12 @@ RGB = [0.7 0.7 0.7];
 plot(time2,CombinedGenPwr2,Color=RGB,LineWidth=0.5)
 hold on
 plot(time2,mean10TestGenPwr2,'r',LineWidth=1)
-plot(time2,ones(length(time),1).*(overallMeanGenPwr2+overallStdGenPwr2),LineStyle='--',Color='b')
-plot(time2,ones(length(time),1).*overallMeanGenPwr2,LineStyle='--',Color='g')
-plot(time2,ones(length(time),1).*(overallMeanGenPwr2-overallStdGenPwr2),LineStyle='--',Color='b')
+plot(time2,ones(length(time2),1).*(overallMeanGenPwr2+overallStdGenPwr2),LineStyle='--',Color='b')
+plot(time2,ones(length(time2),1).*overallMeanGenPwr2,LineStyle='--',Color='g')
+plot(time2,ones(length(time2),1).*(overallMeanGenPwr2-overallStdGenPwr2),LineStyle='--',Color='b')
 legend('Runs','','','','','','','','','','Mean','','Overall mean','Overall \pm Std')
 xlabel('Time[s]')
-ylabel('Generator Power[kW]')
+ylabel('Generator Power[MW]')
 xlim([0 3600])
 title('PPO ETM 14 m/s Scenario: Generator Power(10 runs+mean, overall mean \pm std )')
 hold off
@@ -277,16 +277,16 @@ del10 = DEL17MPSNormal.DEL_10;
 PPODELNTM17 = cat(1,del1,del2,del3,del4,del5,del6,del7,del8,del9,del10);
 meanPPODELNTM17 = mean(PPODELNTM17,1,"omitmissing");
 %% calc Mean Gen Pwr
-dat1 = TestResults17MPSNormal.OutData_1(:,24);
-dat2 = TestResults17MPSNormal.OutData_2(:,24);
-dat3 = TestResults17MPSNormal.OutData_3(:,24);
-dat4 = TestResults17MPSNormal.OutData_4(:,24);
-dat5 = TestResults17MPSNormal.OutData_5(:,24);
-dat6 = TestResults17MPSNormal.OutData_6(:,24);
-dat7 = TestResults17MPSNormal.OutData_7(:,24);
-dat8 = TestResults17MPSNormal.OutData_8(:,24);
-dat9 = TestResults17MPSNormal.OutData_9(:,24);
-dat10 = TestResults17MPSNormal.OutData_10(:,24);
+dat1 = TestResults17MPSNormal.OutData_1(:,24)/1000;
+dat2 = TestResults17MPSNormal.OutData_2(:,24)/1000;
+dat3 = TestResults17MPSNormal.OutData_3(:,24)/1000;
+dat4 = TestResults17MPSNormal.OutData_4(:,24)/1000;
+dat5 = TestResults17MPSNormal.OutData_5(:,24)/1000;
+dat6 = TestResults17MPSNormal.OutData_6(:,24)/1000;
+dat7 = TestResults17MPSNormal.OutData_7(:,24)/1000;
+dat8 = TestResults17MPSNormal.OutData_8(:,24)/1000;
+dat9 = TestResults17MPSNormal.OutData_9(:,24)/1000;
+dat10 = TestResults17MPSNormal.OutData_10(:,24)/1000;
 CombinedGenPwr = cat(2,dat1,dat2,dat3,dat4,dat5,dat6,dat7,dat8,dat9,dat10);
 mean10TestGenPwr = mean(CombinedGenPwr,2);
 std10TestGenPwr = std(CombinedGenPwr,0,2);
@@ -326,7 +326,7 @@ plot(time,ones(length(time),1).*overallMeanGenPwr,LineStyle='--',Color='g')
 plot(time,ones(length(time),1).*(overallMeanGenPwr-overallStdGenPwr),LineStyle='--',Color='b')
 legend('Runs','','','','','','','','','','Mean','','Overall mean','Overall \pm Std')
 xlabel('Time[s]')
-ylabel('Generator Power[kW]')
+ylabel('Generator Power[MW]')
 xlim([0 3600])
 title('PPO NTM 17 m/s Scenario: Generator Power(10 runs+mean, overall mean \pm std )')
 hold off
@@ -387,16 +387,16 @@ for i=1:10
     DEL17MPSExtreme.(temp_var2) = DELData;
 end
 %% calc Mean Gen Pwr
-dat12 = TestResults17MPSExtreme.OutData_1(:,24);
-dat22 = TestResults17MPSExtreme.OutData_2(:,24);
-dat32 = TestResults17MPSExtreme.OutData_3(:,24);
-dat42 = TestResults17MPSExtreme.OutData_4(:,24);
-dat52 = TestResults17MPSExtreme.OutData_5(:,24);
-dat62 = TestResults17MPSExtreme.OutData_6(:,24);
-dat72 = TestResults17MPSExtreme.OutData_7(:,24);
-dat82 = TestResults17MPSExtreme.OutData_8(:,24);
-dat92 = TestResults17MPSExtreme.OutData_9(:,24);
-dat102 = TestResults17MPSExtreme.OutData_10(:,24);
+dat12 = TestResults17MPSExtreme.OutData_1(:,24)/1000;
+dat22 = TestResults17MPSExtreme.OutData_2(:,24)/1000;
+dat32 = TestResults17MPSExtreme.OutData_3(:,24)/1000;
+dat42 = TestResults17MPSExtreme.OutData_4(:,24)/1000;
+dat52 = TestResults17MPSExtreme.OutData_5(:,24)/1000;
+dat62 = TestResults17MPSExtreme.OutData_6(:,24)/1000;
+dat72 = TestResults17MPSExtreme.OutData_7(:,24)/1000;
+dat82 = TestResults17MPSExtreme.OutData_8(:,24)/1000;
+dat92 = TestResults17MPSExtreme.OutData_9(:,24)/1000;
+dat102 = TestResults17MPSExtreme.OutData_10(:,24)/1000;
 CombinedGenPwr2 = cat(2,dat12,dat22,dat32,dat42,dat52,dat62,dat72,dat82,dat92,dat102);
 mean10TestGenPwr2 = mean(CombinedGenPwr2,2);
 std10TestGenPwr2 = std(CombinedGenPwr2,0,2);
@@ -436,7 +436,7 @@ plot(time2,ones(length(time),1).*overallMeanGenPwr2,LineStyle='--',Color='g')
 plot(time2,ones(length(time),1).*(overallMeanGenPwr2-overallStdGenPwr2),LineStyle='--',Color='b')
 legend('Runs','','','','','','','','','','Mean','','Overall mean','Overall \pm Std')
 xlabel('Time[s]')
-ylabel('Generator Power[kW]')
+ylabel('Generator Power[MW]')
 xlim([0 3600])
 title('PPO ETM 17 m/s Scenario: Generator Power(10 runs+mean, overall mean \pm std )')
 hold off
